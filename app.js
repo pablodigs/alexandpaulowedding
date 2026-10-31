@@ -652,7 +652,7 @@ searchButton.addEventListener(
             show(guest1Text);
 
         } else if (
-            guest.seats === 1
+            guest.seats === 1 && guest.title === "Primary Guest"
         ) {
 
             hide(guest1Text);
@@ -660,7 +660,7 @@ searchButton.addEventListener(
         } else {
 
             guest1Text.textContent =
-                "Primary Guest";
+                guest.title;
 
             show(guest1Text);
         }
