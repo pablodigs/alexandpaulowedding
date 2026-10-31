@@ -179,6 +179,46 @@ const rsvpSuccessContinue =
     document.getElementById("rsvpSuccessContinue");
 
 
+/* ---------------------------------------------
+   DYNAMIC RSVP STEP NUMBERS
+   --------------------------------------------- */
+
+function updateStepNumbers() {
+
+    const cards = document.querySelectorAll(
+        ".rsvp-card"
+    );
+
+    let stepNumber = 1;
+
+    cards.forEach(card => {
+
+        // Skip hidden cards
+        if (
+            card.classList.contains("hidden") ||
+            card.style.display === "none"
+        ) {
+            return;
+        }
+
+        // Find the step number inside the card
+        const stepElement = card.querySelector(
+            ".step-number"
+        );
+
+        if (stepElement) {
+
+            stepElement.textContent =
+                String(stepNumber).padStart(2, "0");
+
+            stepNumber++;
+
+        }
+
+    });
+
+}
+
 function showRsvpSuccessPopup() {
 
     rsvpSuccessOverlay.classList.add("show");
@@ -778,6 +818,7 @@ searchButton.addEventListener(
         // =========================
 
         show(emailCard);
+        updateStepNumbers();
 
         emailInput.value =
             guest.email || "";
@@ -791,6 +832,7 @@ searchButton.addEventListener(
         ) {
 
             show(partyCard);
+            updateStepNumbers();
 
             if (
                 guest.seats === 2

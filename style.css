@@ -5139,7 +5139,7 @@ footer {
 .clear-search-button {
     position: absolute;
     right: 12px;
-    top: 50%;
+    top: 60%;
     transform: translateY(-50%);
 
     width: 28px;
@@ -5153,7 +5153,7 @@ footer {
     border: none;
 
     color: #777;
-    font-size: 23px;
+    font-size: 40px;
     line-height: 1;
 
     cursor: pointer;
