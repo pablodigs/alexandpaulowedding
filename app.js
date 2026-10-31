@@ -160,6 +160,9 @@ const confirmRemoveGuest =
 const emailConfirmationNotice =
     document.getElementById("emailConfirmationNotice");
 
+const clearSearchButton = 
+    document.getElementById("clearSearchButton");
+
 
 
 /* =========================
@@ -887,6 +890,40 @@ searchButton.addEventListener(
         declineButton.disabled = false;
     }
 );
+
+/* ---------------------------------------------
+   CLEAR SEARCH AND RESET RESERVATION
+   --------------------------------------------- */
+
+// SHOW / HIDE CLEAR BUTTON
+searchInput.addEventListener("input", function () {
+
+    if (searchInput.value.trim() !== "") {
+        clearSearchButton.classList.add("visible");
+    } else {
+        clearSearchButton.classList.remove("visible");
+    }
+
+});
+
+
+// CLEAR SEARCH BUTTON
+clearSearchButton.addEventListener("click", function () {
+
+    // Clear search input
+    searchInput.value = "";
+
+    // Hide clear button
+    clearSearchButton.classList.remove("visible");
+
+    // Reset reservation display
+    resetUI();
+
+    // Return focus to search input
+    searchInput.focus();
+
+});
+
 
 // =========================
 // CONFIRM RSVP

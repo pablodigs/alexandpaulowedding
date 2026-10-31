@@ -112,7 +112,7 @@ p {
    HERO
 ========================= */
 .hero {
-    background-image: url("images/hero-background.jpg");
+    background-image: url("images/hero-background.webp");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -1280,7 +1280,7 @@ footer {
     font-family: "Aptos", serif;
     text-align: right;
     padding:
-        5px 20px;
+        15px 20px;
 
     background: var(--brown);
 
@@ -3482,7 +3482,7 @@ p {
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    background-image: linear-gradient(180deg, rgba(24, 21, 18, .25), rgba(24, 21, 18, .50)), url("images/hero-background.jpg");
+    background-image: linear-gradient(180deg, rgba(24, 21, 18, .25), rgba(24, 21, 18, .50)), url("images/hero-background.webp");
     background-size: cover;
     background-position: center 54%;
 }
@@ -3945,7 +3945,7 @@ footer {
 
 .footer-copyright {
     color: rgba(247, 243, 237, .52);
-    font-size: .65rem;
+    font-size: .75rem;
     letter-spacing: .12em;
     text-transform: uppercase;
 }
@@ -5118,4 +5118,54 @@ footer {
     width: 20px;
     height: 20px;
   }
+}
+
+/* ---------------------------------------------
+   SEARCH INPUT WITH CLEAR BUTTON
+   --------------------------------------------- */
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.search-input-wrapper input {
+    width: 100%;
+    padding-right: 45px;
+}
+
+/* CLEAR BUTTON */
+
+.clear-search-button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 28px;
+    height: 28px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    background: transparent;
+    border: none;
+
+    color: #777;
+    font-size: 23px;
+    line-height: 1;
+
+    cursor: pointer;
+    padding: 0;
+
+    transition: color 0.2s ease;
+}
+
+.clear-search-button:hover {
+    color: #222;
+}
+
+.clear-search-button.visible {
+    display: flex;
 }
