@@ -1,7 +1,7 @@
 
 /* =========================================
    ALEX & PAULO
-   MEMORIES & MOMENTS
+   ANGLES & PERSPECTIVES
    SUPABASE PHOTO SHARING
 ========================================= */
 
@@ -12,6 +12,7 @@
 
 const SUPABASE_URL =
     "https://xhtcszatnfmnqjtrjwhh.supabase.co";
+
 
 const SUPABASE_ANON_KEY =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhodGNzemF0bmZtbnFqdHJqd2hoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTEwMzE0MjUsImV4cCI6MjEwNjYwNzQyNX0.SiNVD3vDqt5sf_folcO1SKp9Hy46NMAIXI3fBT-Z0Kk";
@@ -164,6 +165,77 @@ function formatFileSize(bytes) {
 }
 
 
+/* =========================================
+   STORAGE CAPACITY ERROR DETECTOR
+========================================= */
+
+function isStorageCapacityError(error) {
+
+    if (!error) return false;
+
+    const message = [
+        error.message,
+        error.error,
+        error.details,
+        error.hint,
+        error.code
+    ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    const capacityKeywords = [
+        "storage quota",
+        "quota exceeded",
+        "storage limit",
+        "storage capacity",
+        "exceeded your storage",
+        "exceeded the storage",
+        "maximum storage",
+        "not enough storage",
+        "insufficient storage",
+        "storagequotaexceeded",
+        "quotaexceeded",
+        "project storage"
+    ];
+
+    return capacityKeywords.some(function (keyword) {
+
+        return message.includes(keyword);
+
+    });
+
+}
+
+
+/* =========================================
+   INDIVIDUAL FILE SIZE ERROR DETECTOR
+========================================= */
+
+function isFileSizeError(error) {
+
+    if (!error) return false;
+
+    const message = [
+        error.message,
+        error.error,
+        error.details,
+        error.hint
+    ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+
+    return (
+        message.includes("maximum allowed size") ||
+        message.includes("file size limit") ||
+        message.includes("file too large") ||
+        message.includes("object exceeded")
+    );
+
+}
+
+
 function updateUploadButton() {
 
     uploadButton.disabled =
@@ -300,10 +372,6 @@ async function addPhotos(files) {
 
         for (const originalFile of incomingFiles) {
 
-            /* =========================
-               CHECK MAXIMUM PHOTO COUNT
-            ========================= */
-
             if (selectedFiles.length >= MAX_FILES) {
 
                 showMessage(
@@ -315,11 +383,6 @@ async function addPhotos(files) {
 
             }
 
-
-            /* =========================
-               CHECK ORIGINAL FILE SIZE
-            ========================= */
-
             if (originalFile.size > MAX_FILE_SIZE) {
 
                 showMessage(
@@ -330,11 +393,6 @@ async function addPhotos(files) {
                 continue;
 
             }
-
-
-            /* =========================
-               DETECT HEIC / HEIF
-            ========================= */
 
             const fileName =
                 originalFile.name.toLowerCase();
@@ -348,12 +406,6 @@ async function addPhotos(files) {
                 fileName.endsWith(".heif");
 
             let file = originalFile;
-
-
-            /* =========================
-               CONVERT IPHONE PHOTOS
-               HEIC / HEIF TO JPEG
-            ========================= */
 
             if (isHEIC) {
 
@@ -387,15 +439,10 @@ async function addPhotos(files) {
 
                         });
 
-
-                    // Some HEIC files may return
-                    // an array of converted images.
-
                     const convertedBlob =
                         Array.isArray(convertedResult)
                             ? convertedResult[0]
                             : convertedResult;
-
 
                     if (!convertedBlob) {
 
@@ -405,13 +452,11 @@ async function addPhotos(files) {
 
                     }
 
-
                     const convertedName =
                         originalFile.name.replace(
                             /\.(heic|heif)$/i,
                             ".jpg"
                         );
-
 
                     file = new File(
                         [convertedBlob],
@@ -453,11 +498,6 @@ async function addPhotos(files) {
 
             }
 
-
-            /* =========================
-               CHECK DUPLICATE PHOTOS
-            ========================= */
-
             const alreadySelected =
                 selectedFiles.some(function (item) {
 
@@ -472,11 +512,6 @@ async function addPhotos(files) {
             if (alreadySelected) {
                 continue;
             }
-
-
-            /* =========================
-               ADD PHOTO TO PREVIEW
-            ========================= */
 
             selectedFiles.push({
 
@@ -528,9 +563,6 @@ browseButton.addEventListener(
 photoInput.addEventListener(
     "change",
     function () {
-
-        // Save the selected files before
-        // clearing the input value.
 
         const files =
             Array.from(photoInput.files);
@@ -616,7 +648,6 @@ async function compressImage(file) {
 
     let height = image.height;
 
-
     if (
         width > MAX_DIMENSION ||
         height > MAX_DIMENSION
@@ -633,7 +664,6 @@ async function compressImage(file) {
 
     }
 
-
     const canvas =
         document.createElement("canvas");
 
@@ -641,10 +671,8 @@ async function compressImage(file) {
 
     canvas.height = height;
 
-
     const context =
         canvas.getContext("2d");
-
 
     context.drawImage(
         image,
@@ -654,9 +682,7 @@ async function compressImage(file) {
         height
     );
 
-
     image.close();
-
 
     return new Promise(function (resolve, reject) {
 
@@ -726,7 +752,6 @@ async function uploadPhotos(event) {
         return;
     }
 
-
     const guestName =
         guestNameInput.value.trim();
 
@@ -750,7 +775,6 @@ async function uploadPhotos(event) {
         return;
 
     }
-
 
     if (guestName.length > 80) {
 
@@ -819,6 +843,10 @@ async function uploadPhotos(event) {
 
     let failedUploads = 0;
 
+    let storageCapacityReached = false;
+
+    let fileSizeRestrictionReached = false;
+
     const successfulItems = [];
 
     const failedItems = [];
@@ -847,12 +875,10 @@ async function uploadPhotos(event) {
                 const compressedBlob =
                     await compressImage(item.file);
 
-
                 const extension =
                     compressedBlob.type === "image/webp"
                         ? "webp"
                         : "jpg";
-
 
                 const filePath =
                     `uploads/${crypto.randomUUID()}.${extension}`;
@@ -881,6 +907,33 @@ async function uploadPhotos(event) {
 
 
                 if (storageError) {
+
+                    /* =========================
+                       CHECK STORAGE CAPACITY
+                    ========================= */
+
+                    if (
+                        isStorageCapacityError(storageError)
+                    ) {
+
+                        storageCapacityReached = true;
+
+                        throw storageError;
+
+                    }
+
+
+                    /* =========================
+                       CHECK FILE SIZE RESTRICTION
+                    ========================= */
+
+                    if (
+                        isFileSizeError(storageError)
+                    ) {
+
+                        fileSizeRestrictionReached = true;
+
+                    }
 
                     throw storageError;
 
@@ -935,6 +988,30 @@ async function uploadPhotos(event) {
             }
 
 
+            /* =========================
+               STOP IF STORAGE IS FULL
+            ========================= */
+
+            if (storageCapacityReached) {
+
+                // Preserve every photo that has
+                // not yet been attempted.
+
+                const remainingItems =
+                    filesToUpload.slice(index + 1);
+
+                failedItems.push(
+                    ...remainingItems
+                );
+
+                failedUploads +=
+                    remainingItems.length;
+
+                break;
+
+            }
+
+
             updateProgress(
                 index + 1,
                 totalFiles
@@ -950,9 +1027,6 @@ async function uploadPhotos(event) {
 
         if (successfulUploads > 0) {
 
-            // Revoke preview URLs only for
-            // photos successfully uploaded.
-
             successfulItems.forEach(
                 function (item) {
 
@@ -963,19 +1037,20 @@ async function uploadPhotos(event) {
                 }
             );
 
+        }
 
-            // Keep unsuccessful photos selected
-            // so guests can retry uploading them.
+        selectedFiles = failedItems;
 
-            selectedFiles = failedItems;
+        renderPreviews();
 
-
-            renderPreviews();
-
-            updateUploadButton();
+        updateUploadButton();
 
 
-            // Refresh the gallery.
+        /* =========================
+           REFRESH GALLERY
+        ========================= */
+
+        if (successfulUploads > 0) {
 
             await loadGallery(true);
 
@@ -986,7 +1061,34 @@ async function uploadPhotos(event) {
            DISPLAY UPLOAD RESULTS
         ========================= */
 
-        if (failedUploads === 0) {
+        if (storageCapacityReached) {
+
+            if (successfulUploads > 0) {
+
+                showMessage(
+                    `${successfulUploads} photos were uploaded successfully, but our shared album has reached its storage capacity. The remaining photos are still in your preview. Please try again later. Thank you for sharing your memories with us!`,
+                    "error"
+                );
+
+            } else {
+
+                showMessage(
+                    "Our photo gallery has reached its upload capacity. Uploads are temporarily unavailable. Please try again later. Thank you for sharing your memories with us!",
+                    "error"
+                );
+
+            }
+
+        } else if (fileSizeRestrictionReached) {
+
+            showMessage(
+                successfulUploads > 0
+                    ? `${successfulUploads} photos uploaded successfully. Some photos exceeded the storage file-size restriction. Your unsuccessful photos are still in the preview.`
+                    : "One or more photos exceeded the allowed file-size limit. Your selected photos are still in the preview.",
+                "error"
+            );
+
+        } else if (failedUploads === 0) {
 
             showMessage(
                 successfulUploads === 1
@@ -1012,7 +1114,10 @@ async function uploadPhotos(event) {
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "Unexpected upload error:",
+            error
+        );
 
         showMessage(
             "Something went wrong. Your selected photos have been preserved. Please try again.",
@@ -1067,7 +1172,6 @@ function renderGallery(photos, append = false) {
 
     }
 
-
     if (
         photos.length === 0 &&
         !append
@@ -1083,14 +1187,12 @@ function renderGallery(photos, append = false) {
 
     }
 
-
     photos.forEach(function (photo) {
 
         const wrapper =
             document.createElement("div");
 
         wrapper.className = "gallery-item";
-
 
         const image =
             document.createElement("img");
@@ -1106,12 +1208,10 @@ function renderGallery(photos, append = false) {
 
         image.decoding = "async";
 
-
         const info =
             document.createElement("div");
 
         info.className = "gallery-item-info";
-
 
         const name =
             document.createElement("strong");
@@ -1119,18 +1219,15 @@ function renderGallery(photos, append = false) {
         name.textContent =
             photo.guest_name;
 
-
         const date =
             document.createElement("span");
 
         date.textContent =
             formatDate(photo.created_at);
 
-
         info.appendChild(name);
 
         info.appendChild(date);
-
 
         if (photo.caption) {
 
@@ -1144,11 +1241,9 @@ function renderGallery(photos, append = false) {
 
         }
 
-
         wrapper.appendChild(image);
 
         wrapper.appendChild(info);
-
 
         wrapper.addEventListener(
             "click",
@@ -1158,7 +1253,6 @@ function renderGallery(photos, append = false) {
 
             }
         );
-
 
         galleryGrid.appendChild(wrapper);
 
@@ -1177,7 +1271,6 @@ async function loadGallery(reset = false) {
 
     isLoadingGallery = true;
 
-
     if (reset) {
 
         currentPage = 0;
@@ -1188,7 +1281,6 @@ async function loadGallery(reset = false) {
 
     }
 
-
     if (!hasMorePhotos) {
 
         isLoadingGallery = false;
@@ -1197,7 +1289,6 @@ async function loadGallery(reset = false) {
 
     }
 
-
     try {
 
         const from =
@@ -1205,7 +1296,6 @@ async function loadGallery(reset = false) {
 
         const to =
             from + PAGE_SIZE - 1;
-
 
         const { data, error } =
             await supabaseClient
@@ -1219,9 +1309,7 @@ async function loadGallery(reset = false) {
                 )
                 .range(from, to);
 
-
         if (error) throw error;
-
 
         if (reset) {
 
@@ -1238,16 +1326,13 @@ async function loadGallery(reset = false) {
 
         }
 
-
         currentPage++;
 
         hasMorePhotos =
             data.length === PAGE_SIZE;
 
-
         galleryCount.textContent =
             `${galleryPhotos.length} memories shared`;
-
 
         loadMoreButton.classList.toggle(
             "hidden",
@@ -1256,8 +1341,10 @@ async function loadGallery(reset = false) {
 
     } catch (error) {
 
-        console.error(error);
-
+        console.error(
+            "Gallery loading error:",
+            error
+        );
 
         if (reset) {
 
@@ -1339,9 +1426,7 @@ function openLightbox(photoID) {
             }
         );
 
-
     if (currentLightboxIndex < 0) return;
-
 
     showLightboxPhoto();
 
@@ -1359,10 +1444,8 @@ function showLightboxPhoto() {
 
     if (!photo) return;
 
-
     lightboxImage.src =
         getPhotoURL(photo.storage_path);
-
 
     lightboxCaption.textContent =
         photo.guest_name +
@@ -1388,14 +1471,12 @@ function changeLightboxPhoto(direction) {
 
     if (galleryPhotos.length === 0) return;
 
-
     currentLightboxIndex =
         (
             currentLightboxIndex +
             direction +
             galleryPhotos.length
         ) % galleryPhotos.length;
-
 
     showLightboxPhoto();
 
@@ -1450,20 +1531,17 @@ document.addEventListener(
             return;
         }
 
-
         if (event.key === "Escape") {
 
             closeLightbox();
 
         }
 
-
         if (event.key === "ArrowLeft") {
 
             changeLightboxPhoto(-1);
 
         }
-
 
         if (event.key === "ArrowRight") {
 
