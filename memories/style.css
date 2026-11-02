@@ -1,0 +1,648 @@
+
+/* =========================================
+   MEMORIES & MOMENTS
+   ALEX & PAULO WEDDING
+========================================= */
+
+:root {
+    --ivory: #f7f5ef;
+    --paper: #fffefa;
+    --sage: #78836e;
+    --sage-light: #e9ece4;
+    --olive: #5f6650;
+    --brown: #786d60;
+    --text: #38372f;
+    --muted: #8c887d;
+    --border: #e6e1d6;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: var(--ivory);
+    color: var(--text);
+    font-family: "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* =========================================
+   HERO
+========================================= */
+
+.hero {
+    text-align: center;
+    padding: 105px 24px 75px;
+    max-width: 760px;
+    margin: auto;
+}
+
+.eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: var(--sage);
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: clamp(48px, 9vw, 82px);
+    font-weight: 400;
+    line-height: 0.95;
+    margin: 0;
+}
+
+.hero h1 span {
+    color: var(--olive);
+    font-style: italic;
+}
+
+.hero-script {
+    font-family: "Pinyon Script", cursive;
+    font-size: 32px;
+    color: var(--olive);
+    margin: 16px 0;
+}
+
+.hero-divider {
+    color: var(--sage);
+    margin: 30px auto;
+}
+
+.hero-description {
+    max-width: 460px;
+    margin: auto;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 2;
+    white-space: pre-line;
+}
+
+.hero-thankyou {
+    margin-top: 30px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 19px;
+    font-style: italic;
+}
+
+
+/* =========================================
+   MAIN CONTENT
+========================================= */
+
+.main-content {
+    width: min(100% - 36px, 1050px);
+    margin: auto;
+}
+
+.upload-section,
+.gallery-section {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    padding: clamp(24px, 5vw, 55px);
+    margin-bottom: 35px;
+    box-shadow: 0 10px 35px rgba(55, 48, 36, 0.035);
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.section-kicker {
+    color: var(--sage);
+    font-size: 9px;
+    letter-spacing: 2.5px;
+}
+
+.section-heading h2 {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 500;
+    font-size: clamp(32px, 5vw, 45px);
+    margin: 12px 0;
+}
+
+.section-heading p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+
+/* =========================================
+   FORM
+========================================= */
+
+#uploadForm {
+    max-width: 650px;
+    margin: auto;
+}
+
+.form-group {
+    margin-bottom: 23px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    margin-bottom: 9px;
+}
+
+.form-group label span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.form-group input {
+    width: 100%;
+    height: 49px;
+    padding: 0 15px;
+    background: var(--ivory);
+    border: 1px solid var(--border);
+    outline: none;
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--text);
+    transition: border 0.2s ease;
+}
+
+.form-group input:focus {
+    border-color: var(--sage);
+}
+
+.form-group input::placeholder {
+    color: #aaa69b;
+}
+
+
+/* =========================================
+   UPLOAD BOX
+========================================= */
+
+.upload-box {
+    border: 1px dashed #b7bdac;
+    background: #f5f6f1;
+    padding: 45px 20px;
+    text-align: center;
+    transition: background 0.2s ease;
+}
+
+.upload-box.dragging {
+    background: var(--sage-light);
+    border-color: var(--sage);
+}
+
+.upload-icon {
+    width: 37px;
+    height: 37px;
+    margin: 0 auto 15px;
+    color: var(--sage);
+}
+
+.upload-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.upload-box h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 8px;
+}
+
+.upload-box p {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.browse-button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: var(--olive);
+    text-decoration: underline;
+    font-size: 11px;
+}
+
+.upload-hint {
+    display: block;
+    margin-top: 20px;
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: 0.5px;
+}
+
+
+/* =========================================
+   PREVIEW GRID
+========================================= */
+
+.preview-section {
+    margin-top: 28px;
+}
+
+.preview-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.preview-heading h3 {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.preview-heading span {
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--ivory);
+}
+
+.preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-preview {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    border: none;
+    background: rgba(30, 30, 30, 0.75);
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+}
+
+
+/* =========================================
+   UPLOAD BUTTON
+========================================= */
+
+.upload-button {
+    display: block;
+    width: 100%;
+    min-height: 53px;
+    margin-top: 25px;
+    background: var(--olive);
+    border: 1px solid var(--olive);
+    color: white;
+    font-size: 10px;
+    letter-spacing: 2px;
+    transition: 0.2s ease;
+}
+
+.upload-button:hover:not(:disabled) {
+    background: #593039;
+}
+
+.upload-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.privacy-note {
+    font-size: 9px;
+    line-height: 1.8;
+    text-align: center;
+    color: var(--muted);
+    margin-top: 15px;
+}
+
+.upload-message {
+    text-align: center;
+    font-size: 11px;
+    line-height: 1.7;
+    margin: 15px 0 0;
+    color: var(--sage);
+}
+
+.upload-message.error {
+    color: var(--olive);
+}
+
+
+/* =========================================
+   PROGRESS
+========================================= */
+
+.upload-progress {
+    margin-top: 25px;
+}
+
+.progress-heading {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    margin-bottom: 9px;
+}
+
+.progress-track {
+    height: 4px;
+    background: var(--border);
+}
+
+#progressBar {
+    width: 0;
+    height: 100%;
+    background: var(--sage);
+    transition: width 0.2s ease;
+}
+
+
+/* =========================================
+   GALLERY
+========================================= */
+
+.gallery-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+    font-size: 10px;
+    color: var(--muted);
+}
+
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+}
+
+.live-indicator span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sage);
+    box-shadow: 0 0 0 3px var(--sage-light);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--ivory);
+    cursor: zoom-in;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.45s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.045);
+}
+
+.gallery-item-info {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 35px 12px 12px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.6));
+    color: white;
+}
+
+.gallery-item-info strong {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.gallery-item-info span {
+    display: block;
+    font-size: 9px;
+    margin-top: 4px;
+    opacity: 0.85;
+}
+
+.gallery-placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 15px;
+    font-family: "Cormorant Garamond", serif;
+    font-size: 22px;
+    color: var(--muted);
+}
+
+.load-more {
+    display: block;
+    margin: 35px auto 0;
+    padding: 14px 28px;
+    border: 1px solid var(--sage);
+    background: transparent;
+    color: var(--sage);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+}
+
+.load-more:hover {
+    background: var(--sage-light);
+}
+
+
+/* =========================================
+   LIGHTBOX
+========================================= */
+
+.lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(20, 20, 18, 0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 55px;
+}
+
+.lightbox.active {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 85vw;
+    max-height: 82vh;
+    object-fit: contain;
+}
+
+.lightbox-close,
+.lightbox-nav {
+    position: absolute;
+    border: none;
+    background: transparent;
+    color: white;
+}
+
+.lightbox-close {
+    top: 20px;
+    right: 25px;
+    font-size: 38px;
+}
+
+.lightbox-nav {
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 25px;
+    padding: 15px;
+}
+
+.lightbox-nav.prev {
+    left: 15px;
+}
+
+.lightbox-nav.next {
+    right: 15px;
+}
+
+.lightbox-caption {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 11px;
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+footer {
+    text-align: center;
+    padding: 55px 20px 70px;
+}
+
+.footer-divider {
+    color: var(--sage);
+    margin-bottom: 20px;
+}
+
+footer p {
+    font-family: "Cormorant Garamond", serif;
+    font-size: 20px;
+}
+
+.footer-script {
+    display: block;
+    font-family: "Pinyon Script", cursive;
+    color: var(--olive);
+    font-size: 35px;
+    margin: 10px 0 20px;
+}
+
+footer small {
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--muted);
+}
+
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 650px) {
+
+    .hero {
+        padding: 75px 20px 50px;
+    }
+
+    .main-content {
+        width: calc(100% - 24px);
+    }
+
+    .upload-section,
+    .gallery-section {
+        padding: 25px 18px;
+    }
+
+    .preview-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 7px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 9px;
+    }
+
+    .gallery-item-info {
+        padding: 25px 8px 8px;
+    }
+
+    .gallery-item-info strong {
+        font-size: 9px;
+    }
+
+    .lightbox {
+        padding: 20px;
+    }
+
+    .lightbox img {
+        max-width: 100%;
+        max-height: 75vh;
+    }
+
+    .lightbox-nav.prev {
+        left: 0;
+    }
+
+    .lightbox-nav.next {
+        right: 0;
+    }
+
+}
