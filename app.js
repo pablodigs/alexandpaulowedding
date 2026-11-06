@@ -561,8 +561,8 @@ searchButton.addEventListener(
             if (
                 searchText === firstLast ||
                 searchText === nickLast ||
-                searchText === guest2 ||
-                searchText === guest3
+                guest2.includes(searchText) ||
+                guest3.includes(searchText)
             ) {
                 searchButton.disabled = false;
                 searchButton.classList.remove("loading");
@@ -834,19 +834,16 @@ searchButton.addEventListener(
             show(partyCard);
             updateStepNumbers();
 
-            if (
-                guest.seats === 2
-            ) {
-
+            if(guest.guest2 || guest.guest3){
                 partyInstructions.textContent =
-                    "Please confirm the name of the guest to be included in your reservation.";
-
-            } else {
-
-                partyInstructions.textContent =
-                    "Please confirm the name of each guest to be included in your reservation.";
+                    "Please double-check the guest name provided. If they won't be joining you, click \"Remove\" to update your reservation."
+            
             }
-
+            else{
+                partyInstructions.textContent =
+                    "If you have a guest joining you, please enter their full name. Leaving this field blank confirms that you will be attending without an additional guest."
+            }
+            
             show(partyInstructions);
 
             // =========================
