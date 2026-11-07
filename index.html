@@ -1268,7 +1268,6 @@
     </script>
 
     <script>
-
         const attireSlides = [
 
             {
@@ -1281,7 +1280,7 @@
                     },
                     {
                         title: "Female Guests",
-                        text: "Light Brown Dress"   
+                        text: "Light Brown Dress"
                     }
                 ]
             },
@@ -1383,7 +1382,15 @@
             }
 
         ];
+
+
+        /* =========================================
+        1. ATTIRE VARIABLES
+        ========================================= */
+
         let attireIndex = 0;
+
+        let attireUpdateToken = 0;
 
         const attireImage =
             document.getElementById("attireImage");
@@ -1397,26 +1404,95 @@
         const dots =
             document.querySelectorAll(".dot");
 
-        
         const descriptionContainer =
             document.getElementById("attireDescription");
 
-                
-        function updateAttire() {
+
+        /* =========================================
+        2. PRELOAD AND CACHE ALL ATTIRE IMAGES
+        ========================================= */
+
+        const attireImageCache = new Map();
+
+        function preloadAttireImage(src) {
+
+            // Reuse an existing preload request
+            if (attireImageCache.has(src)) {
+                return attireImageCache.get(src);
+            }
+
+            const imagePromise = new Promise((resolve) => {
+
+                const img = new Image();
+
+                img.onload = () => resolve(img);
+
+                img.onerror = () => resolve(null);
+
+                img.src = src;
+
+                // Handle images already available in browser cache
+                if (img.complete) {
+                    resolve(
+                        img.naturalWidth > 0 ? img : null
+                    );
+                }
+
+            }).then(async (img) => {
+
+                // Decode the image before allowing it to display
+                if (img && typeof img.decode === "function") {
+
+                    try {
+                        await img.decode();
+                    } catch (error) {
+                        // Continue if browser decoding is unsupported
+                    }
+
+                }
+
+                return img;
+
+            });
+
+            attireImageCache.set(src, imagePromise);
+
+            return imagePromise;
+        }
+
+
+        // Start loading all nine images immediately
+        attireSlides.forEach((slide) => {
+            preloadAttireImage(slide.image);
+        });
+
+
+        /* =========================================
+        3. UPDATE ATTIRE SLIDE
+        ========================================= */
+
+        async function updateAttire() {
+
+            // Prevent older image requests from overriding newer selections
+            const currentToken = ++attireUpdateToken;
 
             // Fade out the current image
             attireImage.style.opacity = 0;
 
-            // Get the currently selected slide
+            // Get selected slide
             const currentSlide = attireSlides[attireIndex];
 
-            // Update the role and slide counter
+
+            /* UPDATE ROLE AND COUNTER */
+
             attireRole.textContent = currentSlide.role;
 
             attireCounter.textContent =
                 `${attireIndex + 1} of ${attireSlides.length}`;
 
-            // Update the active dot
+
+            /* UPDATE ACTIVE DOT */
+
             dots.forEach(dot => {
                 dot.classList.remove("active");
             });
@@ -1425,65 +1501,119 @@
                 dots[attireIndex].classList.add("active");
             }
 
-            // UPDATE THE DESCRIPTIONS
+
+            /* UPDATE DESCRIPTIONS */
+
             descriptionContainer.innerHTML = "";
 
-            // Show two columns only if the slide has two descriptions
             descriptionContainer.classList.toggle(
                 "has-two",
                 currentSlide.descriptions.length === 2
             );
 
-            // Create each description for the current slide
             currentSlide.descriptions.forEach(function (item) {
 
-                const descriptionItem = document.createElement("div");
-                descriptionItem.className = "attire-description-item";
+                const descriptionItem =
+                    document.createElement("div");
+
+                descriptionItem.className =
+                    "attire-description-item";
 
                 const title = document.createElement("h5");
+
                 title.textContent = item.title;
 
                 const text = document.createElement("p");
+
                 text.textContent = item.text;
 
                 descriptionItem.appendChild(title);
+
                 descriptionItem.appendChild(text);
 
                 descriptionContainer.appendChild(descriptionItem);
 
             });
 
-            // Change the image after the short fade-out
-            setTimeout(() => {
 
-                attireImage.src = currentSlide.image;
+            /* =========================================
+            4. WAIT FOR IMAGE TO LOAD AND DECODE
+            ========================================= */
 
+            const loadedImage =
+                await preloadAttireImage(currentSlide.image);
+
+            // Ignore outdated image requests
+            if (currentToken !== attireUpdateToken) {
+                return;
+            }
+
+            // Keep the existing image visible if loading fails
+            if (!loadedImage) {
                 attireImage.style.opacity = 1;
+                return;
+            }
 
-            }, 150);
+
+            /* =========================================
+            5. SWITCH IMAGE AND FADE IN
+            ========================================= */
+
+            attireImage.src = currentSlide.image;
+
+            // Wait for the browser to apply the image change
+            requestAnimationFrame(() => {
+
+                requestAnimationFrame(() => {
+
+                    // Make sure this is still the latest selection
+                    if (currentToken !== attireUpdateToken) {
+                        return;
+                    }
+
+                    // Fade in the fully loaded image
+                    attireImage.style.opacity = 1;
+
+                });
+
+            });
 
         }
 
+
+        /* =========================================
+        6. INITIALIZE ATTIRE
+        ========================================= */
+
         updateAttire();
+
+
+        /* =========================================
+        7. NEXT BUTTON
+        ========================================= */
+
         document
             .querySelector(".attire-next")
             .addEventListener("click", () => {
 
                 attireIndex =
-                    (attireIndex + 1)
-                    % attireSlides.length;
+                    (attireIndex + 1) % attireSlides.length;
 
                 updateAttire();
 
             });
+
+
+        /* =========================================
+        8. PREVIOUS BUTTON
+        ========================================= */
 
         document
             .querySelector(".attire-prev")
             .addEventListener("click", () => {
 
                 attireIndex =
-                    (attireIndex - 1 +
-                    attireSlides.length)
+                    (attireIndex - 1 + attireSlides.length)
                     % attireSlides.length;
 
                 updateAttire();
@@ -1491,6 +1621,7 @@
             });
 
     </script>
+
 
     <script>
         let attireTouchStart = 0;
