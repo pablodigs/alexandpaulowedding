@@ -1331,7 +1331,7 @@ footer h3 {
    MOBILE
    ========================= */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
     .modal-overlay {
         padding: 18px;
@@ -1922,7 +1922,7 @@ footer h3 {
 }
 
 /* Mobile adjustments */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     #invitationGate {
         padding: 22px 18px;
     }
@@ -2393,7 +2393,7 @@ footer h3 {
    MOBILE
 ========================= */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
     .rsvp-popup-overlay {
         padding: 20px;
@@ -2508,7 +2508,7 @@ footer h3 {
 
 /* Mobile */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
 
     .gift-section {
         padding-top: 25px;
@@ -2627,7 +2627,7 @@ footer h3 {
 
 /* Mobile adjustments */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
     #backToTop {
         width: 44px;
         height: 44px;
@@ -4845,7 +4845,7 @@ footer {
    SMALL MOBILE SCREENS
    ========================================================= */
 
-@media (max-width: 380px) {
+@media (max-width: 768px) {
 
     #attire .attire-card {
         padding: 18px 10px;
